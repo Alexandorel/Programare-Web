@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="icon" href="images/title-logo.jpg" type="image/x-icon">
+</head>
+
+<body>
+    <center>
+    <img src="images/logo.jpg" alt="Logo" width="200" height="200">
+    <h1 title="Gestionare cheltuieli">Expense Tracker</h1>
+    <h2 class="student-name">Nume Student: Vint Alexandru</h2>
+    <h3 class="Description">Aplicatie de urmarire a cheltuielilor se va ocupa de stocarea si gestionarea cheltuielilor efectuate de user.</h3>
+    <h4>Descriere Proiect</h4>
+    <h6>Versiune aplicatie 1.0</h6>
+    </center>
+
+    <div class="menu">
+    <a href="#descriere" title="Secțiunea Descriere" target="_self">Descriere</a>
+    <a href="#functionalitati" title="Secțiunea Funcționalități" target="_self">Funcționalități</a>
+    <a href="#tehnologii" title="Secțiunea Tehnologii" target="_self">Tehnologii</a>
+    <a href="#contact"title="Secțiunea Contact" target="_self">Contact</a>
+    </div>
+
+    <section id="descriere">
+    <h2>Descriere generala</h2>
+    <p>
+    Aceasta aplicatie de <b>gestionare a cheltuielilor</b> permite utilizatorilor...
+    <br>Se pot adauga cheltuieli, vizualiza <span>rapoarte</span> detaliate. <!-- Adăugat tag-ul span -->
+    </p>
+    </section>
+
+    <section id="functionalitati">
+    <h2>Functionalitati principale</h2>
+    <ul>
+        <li><strong>Adaugare cheltuieli</strong></li>
+        <li>Vizualizare statistici</li>
+        <li>Filtrare pe categorii</li>
+    </ul>
+
+    <h3>Workflow</h3>
+    <ol>
+        <li>Deschizi aplicatia</li>
+        <li>Introduci cheltuiala</li>
+        <li>Vizualizezi raportul</li>
+    </ol>
+    </section>
+
+    <section id="tehnologii">
+    <h2>Tehnologii folosite</h2>
+    <table border="1" width="100%">
+        <tr bgcolor="#dcdcdc">
+            <th align="center" valign="middle">Limbaj / Framework</th>
+            <th>Rol in proiect</th>
+        </tr>
+        <tr>
+            <td>Java Script</td>
+            <td>Backend si logica aplicatie</td>
+        </tr>
+        <tr>
+            <td>MongoDB</td>
+            <td>Stocare date</td>
+        </tr>
+        <tr>
+            <td>HTML / CSS / JS</td>
+            <td>Frontend</td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">Sistem bazat pe tehnologii moderne</td>
+        </tr>
+    </table>
+    </section>
+
+    <section id="demo">
+    <h2>Simulator cheltuiala</h2>
+    <form name="formular_cheltuiala">
+        <fieldset>
+            <legend>Introdu o cheltuiala exemplu</legend>
+            
+            ID Tranzactie: <input type="text" name="id" value="1" readonly size="10" maxlength="30"><br>
+            
+            Denumire cheltuiala:<br>
+            <input type="text" name="denumire" maxlength="30" value=""><br>
+            
+            Suma:<br>
+            <input type="number" name="suma" min="1" max="10000" step="1" value=""><br>
+            
+            Categorie:<br>
+            <select name="categorie" multiple size="2">
+                <option value="alimentatie">Alimentatie</option>
+                <option value="transport" selected>Transport</option>
+                <option value="diverse">Diverse</option>
+            </select><br>
+            
+            Observatii:<br>
+            <textarea rows="4" cols="40" name="observatii"></textarea><br>
+            
+            Cheltuiala recurenta?<br>
+            <input type="checkbox" name="recurenta" checked><br><br>
+            
+            <input type="button" value="Anuleaza" disabled t="t-value">
+            <input type="submit" value="Adauga exemplu *">
+        </fieldset>
+    </form>
+</section>  
+
+    <footer>
+    <h5>Autor: Vint Alexandru</h5>
+    <p>2026 - Proiect HTML/CSS</p>
+    </footer>
+
+
+
+</body>
+</html>
