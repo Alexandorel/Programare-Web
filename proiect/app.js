@@ -3,24 +3,17 @@ const app = express();
 
 app.set('view engine', 'ejs');
 
-app.set('views', './views');
-
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/login', (req, res) => {
-    res.render('login'); 
+app.get('/', (req, res) => {
+    res.redirect('/login');
 });
 
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
+const authRoutes = require('./routes/auth');
 
-    if (username === 'admin' && password === '1234') {
-        res.send('<h1>Autentificare cu succes! Bine ai venit.</h1>');
-    } else {
-        res.render('login', { error: 'Nume de utilizator sau parolă incorectă!' });
-    }
-});
+app.use('/', authRoutes);
 
-app.listen(3000, () => {
-    console.log('Serverul rulează! Deschide browserul la: http://localhost:3000/login');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Serverul rulează pe http://localhost:${PORT}`);
 });
