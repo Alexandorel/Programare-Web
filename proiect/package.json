@@ -1,10 +1,11 @@
 {
   "name": "proiect",
   "version": "1.0.0",
-  "description": "",
+  "description": "Aplicatie cu autentificare unde utilizatorii pot asocia notite unor noduri grafice si pot trasa conexiuni logice intre ele",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
