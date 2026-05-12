@@ -3,12 +3,20 @@
     const fileNameInput = document.getElementById('file-name');
     const saveStatus = document.getElementById('save-status');
     const sidePanel = document.getElementById('side-panel');
+    const edgeHint = document.getElementById('edge-hint');
 
     let saveTimer = null;
     let dirty = false;
+    let pendingEdgeSource = null;
 
     function nextId(prefix) {
         return prefix + '_' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
+    }
+
+    if (typeof cytoscape === 'undefined') {
+        saveStatus.textContent = 'Cytoscape nu s-a incarcat';
+        console.error('Cytoscape lib missing');
+        return;
     }
 
     const cy = cytoscape({
@@ -32,14 +40,9 @@
                     'border-color': '#3a6dc4'
                 }
             },
-            {
-                selector: 'node:selected',
-                style: { 'border-color': '#ffd866', 'border-width': 4 }
-            },
-            {
-                selector: 'node[hasNote = "true"]',
-                style: { 'background-color': '#ff9a4f', 'border-color': '#c46d2c' }
-            },
+            { selector: 'node:selected', style: { 'border-color': '#ffd866', 'border-width': 4 } },
+            { selector: 'node[hasNote = "true"]', style: { 'background-color': '#ff9a4f', 'border-color': '#c46d2c' } },
+            { selector: 'node.edge-source', style: { 'border-color': '#22c55e', 'border-width': 4 } },
             {
                 selector: 'edge',
                 style: {
@@ -50,41 +53,25 @@
                     'curve-style': 'bezier'
                 }
             },
-            {
-                selector: 'edge:selected',
-                style: { 'line-color': '#ffd866', 'target-arrow-color': '#ffd866', 'width': 3 }
-            },
-            {
-                selector: '.eh-handle',
-                style: {
-                    'background-color': '#ffd866',
-                    'width': 10,
-                    'height': 10,
-                    'shape': 'ellipse',
-                    'overlay-opacity': 0,
-                    'border-width': 0
-                }
-            },
-            {
-                selector: '.eh-source, .eh-target',
-                style: { 'border-color': '#ffd866', 'border-width': 3 }
-            },
-            {
-                selector: '.eh-preview, .eh-ghost-edge',
-                style: {
-                    'line-color': '#ffd866',
-                    'target-arrow-color': '#ffd866',
-                    'width': 3
-                }
-            }
+            { selector: 'edge:selected', style: { 'line-color': '#ffd866', 'target-arrow-color': '#ffd866', 'width': 3 } }
         ]
     });
 
-    const eh = cy.edgehandles({
-        snap: true,
-        canConnect: (source, target) => !source.same(target),
-        edgeParams: () => ({ data: { edgeId: nextId('e') } })
-    });
+    function clearEdgeSource() {
+        if (pendingEdgeSource) {
+            pendingEdgeSource.removeClass('edge-source');
+            pendingEdgeSource = null;
+        }
+        edgeHint.style.display = 'none';
+    }
+
+    function setEdgeSource(node) {
+        clearEdgeSource();
+        pendingEdgeSource = node;
+        node.addClass('edge-source');
+        edgeHint.style.display = 'inline';
+        edgeHint.textContent = 'Shift+click un alt nod pentru conexiune (Esc anuleaza)';
+    }
 
     function loadGraph(data) {
         fileNameInput.value = data.name || '';
@@ -147,6 +134,31 @@
         }
     }
 
+    function addNodeAt(pos, label) {
+        const id = nextId('n');
+        const ele = cy.add({
+            group: 'nodes',
+            data: { id, label: label || 'Nod nou', note: '', hasNote: 'false' },
+            position: pos
+        });
+        markDirty();
+        return ele;
+    }
+
+    function connectNodes(source, target) {
+        if (!source || !target || source.same(target)) return;
+        const existing = cy.edges().filter(e =>
+            e.data('source') === source.id() && e.data('target') === target.id()
+        );
+        if (existing.length > 0) return;
+        const id = nextId('e');
+        cy.add({
+            group: 'edges',
+            data: { id, edgeId: id, source: source.id(), target: target.id() }
+        });
+        markDirty();
+    }
+
     function renderSidePanel() {
         const selected = cy.$('node:selected, edge:selected');
         if (selected.length === 0) {
@@ -156,10 +168,12 @@
                 <div class="hint">
                     <strong>Cum se foloseste:</strong><br>
                     - Dublu-click pe canvas: nod nou<br>
-                    - Trage din marginea unui nod spre altul: conexiune<br>
-                    - Dublu-click pe nod: redenumire<br>
-                    - Selecteaza + tasta Delete: sterge<br>
-                    - Scroll: zoom, drag fundal: pan
+                    - Buton <em>+ Nod</em>: nod nou in centru<br>
+                    - <strong>Shift+click</strong> pe un nod, apoi pe altul: conexiune<br>
+                    - Dublu-click pe nod: redenumire rapida<br>
+                    - Selecteaza + tasta <em>Delete</em>: sterge<br>
+                    - Scroll: zoom, drag fundal: pan<br>
+                    - <em>Esc</em>: anuleaza modul de conexiune
                 </div>`;
             return;
         }
@@ -190,7 +204,7 @@
             sidePanel.innerHTML = `
                 <h3>Conexiune selectata</h3>
                 <small>${el.data('source')} &rarr; ${el.data('target')}</small>
-                <button id="del-edge" class="btn" style="background:#a33d3d;color:#fff;border:none;padding:8px;border-radius:6px;cursor:pointer;">Sterge conexiunea</button>`;
+                <button id="del-edge" style="background:#a33d3d;color:#fff;border:none;padding:8px;border-radius:6px;cursor:pointer;margin-top:8px;">Sterge conexiunea</button>`;
             document.getElementById('del-edge').addEventListener('click', () => {
                 el.remove();
                 markDirty();
@@ -203,19 +217,29 @@
     function escapeText(s) { return String(s).replace(/</g, '&lt;'); }
 
     cy.on('tap', (evt) => {
-        if (evt.target === cy) renderSidePanel();
+        if (evt.target === cy) {
+            clearEdgeSource();
+            renderSidePanel();
+            return;
+        }
+        if (evt.target.isNode && evt.target.isNode()) {
+            const shift = evt.originalEvent && evt.originalEvent.shiftKey;
+            if (shift) {
+                if (!pendingEdgeSource) {
+                    setEdgeSource(evt.target);
+                } else {
+                    connectNodes(pendingEdgeSource, evt.target);
+                    clearEdgeSource();
+                }
+            }
+        }
     });
+
     cy.on('select unselect', renderSidePanel);
 
-    cy.on('dblclick', (evt) => {
+    cy.on('dbltap', (evt) => {
         if (evt.target === cy) {
-            const id = nextId('n');
-            cy.add({
-                group: 'nodes',
-                data: { id, label: 'Nod nou', note: '', hasNote: 'false' },
-                position: evt.position
-            });
-            markDirty();
+            addNodeAt(evt.position);
         } else if (evt.target.isNode && evt.target.isNode()) {
             const node = evt.target;
             const newLabel = prompt('Redenumeste nodul:', node.data('label') || '');
@@ -228,12 +252,15 @@
     });
 
     cy.on('dragfree', 'node', markDirty);
-    cy.on('ehcomplete', () => markDirty());
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Delete' || e.key === 'Backspace') {
-            const target = e.target;
-            if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
+        const target = e.target;
+        const inField = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
+        if (e.key === 'Escape') {
+            clearEdgeSource();
+            return;
+        }
+        if ((e.key === 'Delete' || e.key === 'Backspace') && !inField) {
             const sel = cy.$(':selected');
             if (sel.length > 0) {
                 sel.remove();
@@ -249,17 +276,10 @@
         const ext = cy.extent();
         const x = (ext.x1 + ext.x2) / 2;
         const y = (ext.y1 + ext.y2) / 2;
-        const id = nextId('n');
-        cy.add({
-            group: 'nodes',
-            data: { id, label: 'Nod nou', note: '', hasNote: 'false' },
-            position: { x, y }
-        });
-        markDirty();
+        addNodeAt({ x, y });
     });
 
     document.getElementById('btn-save').addEventListener('click', saveNow);
-
     document.getElementById('btn-fit').addEventListener('click', () => cy.fit(undefined, 50));
 
     window.addEventListener('beforeunload', (e) => {

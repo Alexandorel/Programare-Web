@@ -14,6 +14,7 @@
                 <input id="file-name" class="file-name" type="text" value="<%= file.name %>">
             </div>
             <div class="right">
+                <span id="edge-hint" class="edge-hint" style="display:none;"></span>
                 <span id="save-status" class="save-status">Salvat</span>
                 <button id="btn-add-node">+ Nod</button>
                 <button id="btn-fit">Centreaza</button>
@@ -30,8 +31,6 @@
     </div>
 
     <script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script src="https://unpkg.com/cytoscape-edgehandles@4.0.1/cytoscape-edgehandles.js"></script>
     <script>
         window.__FILE_ID__ = "<%= file._id %>";
     </script>

@@ -55,6 +55,7 @@ html, body {
 .top-bar button.primary:hover { background: #6ea0ff; }
 .top-bar button.danger { background: #a33d3d; }
 .top-bar .save-status { font-size: 13px; color: #aaa; min-width: 90px; text-align: right; }
+.top-bar .edge-hint { font-size: 12px; color: #22c55e; background: #14241a; padding: 4px 8px; border-radius: 4px; }
 
 #cy {
     grid-area: canvas;
