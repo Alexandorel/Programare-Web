@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= locals.title ? title : 'NodeNotes' %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #808080, #000000);
+            min-height: 100vh;
+            margin: 0;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background-color: #ffffff;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center">
+    <div class="login-card p-4 shadow-lg">
+        <h3 class="text-center mb-4">Inregistrare</h3>
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger" role="alert"><%= error %></div>
+        <% } %>
+        <form action="/register" method="POST">
+            <div class="mb-3">
+                <label for="username" class="form-label">Nume de utilizator</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mb-3">Creeaza cont</button>
+            <hr class="my-4">
+            <div class="text-center">
+                <p class="text-muted mb-2">Ai deja cont?</p>
+                <a href="/login" class="btn btn-outline-dark w-100">Login</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

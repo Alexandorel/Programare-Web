@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= file.name %> - NodeNotes</title>
+    <link rel="stylesheet" href="/css/canvas.css">
+</head>
+<body>
+    <div class="app">
+        <header class="top-bar">
+            <div class="left">
+                <a href="/dashboard" class="btn">&larr; Fisiere</a>
+                <input id="file-name" class="file-name" type="text" value="<%= file.name %>">
+            </div>
+            <div class="right">
+                <span id="save-status" class="save-status">Salvat</span>
+                <button id="btn-add-node">+ Nod</button>
+                <button id="btn-fit">Centreaza</button>
+                <button id="btn-save" class="primary">Salveaza</button>
+            </div>
+        </header>
+
+        <div id="cy"></div>
+
+        <aside id="side-panel" class="side-panel">
+            <h3>Detalii</h3>
+            <p class="empty">Selecteaza un nod pentru a-i edita eticheta si nota.</p>
+        </aside>
+    </div>
+
+    <script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/cytoscape-edgehandles@4.0.1/cytoscape-edgehandles.js"></script>
+    <script>
+        window.__FILE_ID__ = "<%= file._id %>";
+    </script>
+    <script src="/js/canvas.js"></script>
+</body>
+</html>
