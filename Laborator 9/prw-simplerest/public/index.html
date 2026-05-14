@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista Task-uri</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .filtre {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .filtre label {
+            margin-right: 15px;
+            cursor: pointer;
+        }
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 0 auto;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .filter-user {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista Task-uri</h1>
+
+    <div class="filtre">
+        <strong>Status:</strong>
+        <label><input type="radio" name="status" value="" checked> Toate</label>
+        <label><input type="radio" name="status" value="pending"> Pending</label>
+        <label><input type="radio" name="status" value="ongoing"> Ongoing</label>
+        <label><input type="radio" name="status" value="completed"> Completed</label>
+    </div>
+
+    <div class="filter-user">
+        <strong>User:</strong>
+        <input type="text" id="filtru-user" placeholder="Ex: alex (lasa gol pentru toti)">
+        <button id="btn-filtreaza">Filtreaza</button>
+    </div>
+
+    <table id="tabelTaskuri">
+        <thead>
+            <tr>
+                <th>Nume</th>
+                <th>Status</th>
+                <th>User</th>
+                <th>Data crearii</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        function incarcaTaskuri() {
+            var statusSelectat = document.querySelector('input[name="status"]:checked').value;
+            var userInput = document.getElementById('filtru-user').value.trim();
+
+            var url = '/tasks';
+            var params = [];
+            if (statusSelectat) params.push('status=' + encodeURIComponent(statusSelectat));
+            if (userInput) params.push('user=' + encodeURIComponent(userInput));
+            if (params.length > 0) url += '?' + params.join('&');
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var taskuri = JSON.parse(xhr.responseText);
+                    afiseazaTaskuri(taskuri);
+                }
+            };
+            xhr.send();
+        }
+
+        function afiseazaTaskuri(taskuri) {
+            var tbody = document.querySelector('#tabelTaskuri tbody');
+            tbody.innerHTML = '';
+
+            if (taskuri.length === 0) {
+                var tr = document.createElement('tr');
+                var td = document.createElement('td');
+                td.colSpan = 4;
+                td.style.textAlign = 'center';
+                td.innerText = 'Nu exista task-uri pentru filtrul selectat.';
+                tr.appendChild(td);
+                tbody.appendChild(tr);
+                return;
+            }
+
+            taskuri.forEach(function (t) {
+                var tr = document.createElement('tr');
+
+                var tdNume = document.createElement('td');
+                tdNume.innerText = t.name || '';
+                tr.appendChild(tdNume);
+
+                var tdStatus = document.createElement('td');
+                tdStatus.innerText = t.status || '';
+                tr.appendChild(tdStatus);
+
+                var tdUser = document.createElement('td');
+                tdUser.innerText = t.user || '';
+                tr.appendChild(tdUser);
+
+                var tdData = document.createElement('td');
+                tdData.innerText = t.Created_date ? new Date(t.Created_date).toLocaleString() : '';
+                tr.appendChild(tdData);
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.querySelectorAll('input[name="status"]').forEach(function (radio) {
+            radio.addEventListener('change', incarcaTaskuri);
+        });
+
+        document.getElementById('btn-filtreaza').addEventListener('click', incarcaTaskuri);
+
+        incarcaTaskuri();
+    </script>
+</body>
+</html>
