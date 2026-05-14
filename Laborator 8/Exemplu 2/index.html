@@ -1,0 +1,37 @@
+<html>
+<style>
+    .option {
+        padding: 3px;
+    }
+
+    #theimage {
+        margin-top: 50px;
+    }
+</style>
+<script>
+    function update(imgName) {
+        // alert(imgName);
+        var params = 'orem=ipsum&name=' + imgName;
+        xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:8001/demo", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                string = xhr.responseText;
+                document.getElementById('theimage').innerHTML = string;
+            }
+        }
+        xhr.send(params);
+    }
+</script>
+<div style="margin:120px">
+    <select onchange="update(this.options[this.selectedIndex].text)">
+        <option value="adobe">Adobe</option>
+        <option value="apple">Apple</option>
+        <option value="ibm">IBM</option>
+        <option value="yahoo">Yahoo</option>
+    </select>
+    <div id="theimage"></div>
+</div>
+
+</html>

@@ -1,0 +1,39 @@
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <a href="/mac">imagine SVG</a>
+    <script>
+        $(document).ready(function () {
+            $("p").click(function () {
+                $.post("http://localhost:8001/user",
+                    { name: "Donald Duck", city: "Duckburg" },
+                    function (data, status) {
+                        alert("Data: " + data + "\nStatus: " + status);
+                    });
+            });
+        });
+    </script>
+    <p>result <!-- here --></p>
+    <button>Send an HTTP POST request</button>
+    <script>
+        $(document).ready(function () {
+            $("button").click(function () {
+                $.ajax('http://localhost:8001/user', {
+                    type: 'POST', // http method
+                    data: { myData: 'This is my data.' }, // data to submit
+                    success: function (data, status, xhr) {
+                        $('p').append('status: ' + status + ', data: ' + data);
+                    },
+                    error: function (jqXhr, textStatus, errorMessage) {
+                        $('p').append('Error' + errorMessage);
+                    }
+                });
+            });
+        });
+    </script>
+
+</html>

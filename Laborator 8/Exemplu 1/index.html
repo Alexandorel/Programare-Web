@@ -1,0 +1,18 @@
+<html>
+<script>
+    function changeText() {
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", "http://localhost:8001/getstring", true);
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                string = xmlhttp.responseText;
+                document.getElementById('test').innerHTML = string;
+            }
+        }
+        xmlhttp.send();
+    }
+</script>
+<p id='test'>Acesta este index.html</p>
+<button onclick='javascript:changeText()'>Demo</button>
+
+</html>
