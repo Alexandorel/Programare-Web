@@ -5,7 +5,11 @@ const Task = mongoose.model('Tasks');
 
 exports.list_all_tasks = async function(req, res) {
   try {
-    const tasks = await Task.find({});
+    const filter = {};
+    if (req.query.status) filter.status = req.query.status;
+    if (req.query.user) filter.user = req.query.user;
+
+    const tasks = await Task.find(filter);
     res.json(tasks);
   } catch (err) {
     res.status(500).send(err);
