@@ -1,15 +1,16 @@
 {
   "name": "laborator6",
   "version": "1.0.0",
-  "description": "",
+  "description": "Mecanism de inregistrare + autentificare cu Node.js + Express + EJS; pagina protejata cu Gravatar si contor de accesari",
   "license": "ISC",
-  "author": "",
+  "author": "Alex",
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "ejs": "^5.0.2",
     "express": "^5.2.1",
     "express-session": "^1.19.0"
