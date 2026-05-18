@@ -1,13 +1,13 @@
 {
   "name": "laborator-7",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Agenda de contacte - aplicatie Node.js + Express + EJS cu inregistrare, autentificare prin sesiuni si zona protejata",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Alex",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
