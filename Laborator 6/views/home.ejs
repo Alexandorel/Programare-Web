@@ -1,0 +1,17 @@
+<%- include('head', { titlu: 'Acasa', utilizator: utilizator }) %>
+
+    <h1>Bine ai venit, <%= utilizator.nume %>!</h1>
+
+    <div class="card">
+        <img class="avatar" src="<%= gravatar %>" alt="Imagine Gravatar" width="200" height="200">
+        <p class="info">Imaginea Gravatar asociata adresei <%= utilizator.email %></p>
+    </div>
+
+    <div class="card">
+        <p class="info">Accesari ale paginii in sesiunea curenta:</p>
+        <p class="contor"><%= views %></p>
+        <p class="info">Reincarca pagina pentru a vedea contorul crescand.</p>
+    </div>
+
+</body>
+</html>

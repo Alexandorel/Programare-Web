@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= titlu %> · Laborator 6</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: system-ui, Arial, sans-serif; max-width: 720px;
+               margin: 0 auto; padding: 24px; background: #f4f6f8; color: #1f2937; }
+        nav { display: flex; gap: 16px; align-items: center; padding: 12px 0;
+              border-bottom: 2px solid #d1d5db; margin-bottom: 24px; }
+        nav a { text-decoration: none; color: #2563eb; font-weight: 600; }
+        nav .spacer { flex: 1; }
+        h1 { color: #111827; }
+        .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px;
+                padding: 20px; margin-bottom: 16px; text-align: center; }
+        .eroare { background: #fee2e2; color: #b91c1c; padding: 10px 14px;
+                  border-radius: 6px; margin-bottom: 16px; }
+        form label { display: block; margin: 12px 0 4px; font-weight: 600; }
+        form input { width: 100%; padding: 8px; border: 1px solid #d1d5db;
+                     border-radius: 6px; }
+        button, .btn { display: inline-block; margin-top: 16px; padding: 9px 18px;
+                background: #2563eb; color: #fff; border: 0; border-radius: 6px;
+                cursor: pointer; text-decoration: none; font-size: 14px; }
+        .avatar { border-radius: 50%; border: 3px solid #e5e7eb; }
+        .info { color: #6b7280; font-size: 14px; }
+        .contor { font-size: 40px; font-weight: 700; color: #2563eb; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Acasa</a>
+        <% if (utilizator) { %>
+            <span class="spacer"></span>
+            <span class="info"><%= utilizator.email %></span>
+            <a href="/logout">Logout</a>
+        <% } else { %>
+            <span class="spacer"></span>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        <% } %>
+    </nav>
