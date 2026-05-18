@@ -1,0 +1,20 @@
+<%- include('partials/head', { titlu: 'Acasa' }) %>
+
+<h1>Agenda de contacte</h1>
+<p>Aplicatie web cu inregistrare, autentificare prin sesiuni si o zona protejata
+   in care iti poti consulta agenda de contacte.</p>
+
+<% if (utilizator) { %>
+    <div class="card">
+        <p>Esti autentificat ca <strong><%= utilizator.nume %></strong>.</p>
+        <a class="btn" href="/agenda">Mergi la agenda</a>
+    </div>
+<% } else { %>
+    <div class="card">
+        <p>Pentru a accesa agenda, autentifica-te sau creeaza un cont nou.</p>
+        <a class="btn" href="/login">Login</a>
+        <a class="btn" href="/register">Register</a>
+    </div>
+<% } %>
+
+<%- include('partials/foot') %>
