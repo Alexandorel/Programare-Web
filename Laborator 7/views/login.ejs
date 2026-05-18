@@ -1,0 +1,21 @@
+<%- include('partials/head', { titlu: 'Autentificare' }) %>
+
+<h1>Autentificare</h1>
+
+<% if (eroare) { %>
+    <p class="eroare"><%= eroare %></p>
+<% } %>
+
+<form action="/login" method="post" class="card">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="parola">Parola</label>
+    <input type="password" id="parola" name="parola" required>
+
+    <button type="submit">Intra in cont</button>
+</form>
+
+<p class="info">Nu ai cont? <a href="/register">Inregistreaza-te</a>.</p>
+
+<%- include('partials/foot') %>
