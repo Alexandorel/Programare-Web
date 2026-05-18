@@ -1,0 +1,18 @@
+<%- include('../partials/head', { titlu: 'Detaliu contact' }) %>
+
+<% if (!contact) { %>
+    <h1>Contact inexistent</h1>
+    <p>Nu am gasit niciun contact cu acest identificator.</p>
+<% } else { %>
+    <h1><%= contact.nume %></h1>
+    <div class="card">
+        <p><strong>Categorie:</strong> <%= contact.categorie %></p>
+        <p><strong>Telefon:</strong> <%= contact.telefon %></p>
+        <p><strong>Email:</strong> <%= contact.email %></p>
+        <p><strong>Oras:</strong> <%= contact.oras %></p>
+    </div>
+<% } %>
+
+<a class="btn" href="/agenda">Inapoi la agenda</a>
+
+<%- include('../partials/foot') %>
