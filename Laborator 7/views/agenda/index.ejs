@@ -1,0 +1,25 @@
+<%- include('../partials/head', { titlu: 'Agenda' }) %>
+
+<h1>Salut, <%= utilizator.nume %>!</h1>
+<p class="info">Ai vizitat agenda de <strong><%= vizite %></strong> ori in aceasta sesiune.</p>
+
+<% if (ultimContact) { %>
+    <div class="card">
+        <p>Ultimul contact pe care l-ai deschis: <strong><%= ultimContact %></strong></p>
+    </div>
+<% } %>
+
+<h2>Contacte (<%= contacte.length %>)</h2>
+<ul class="contacte">
+    <% contacte.forEach(function(c) { %>
+        <li class="card">
+            <strong><%= c.nume %></strong> — <%= c.categorie %><br>
+            <span class="info"><%= c.telefon %> · <%= c.oras %></span><br>
+            <a href="/agenda/<%= c.id %>">Vezi detalii</a>
+        </li>
+    <% }); %>
+</ul>
+
+<p><a href="/logout">Logout</a></p>
+
+<%- include('../partials/foot') %>
