@@ -306,10 +306,10 @@
     // ── Note modal ────────────────────────────────────────────────
     function openNoteModal(node) {
         activeNoteNode = node;
-        document.getElementById('note-modal-title').textContent = node.data('label') || 'Note';
+        document.getElementById('note-modal-label-input').value = node.data('label') || '';
         document.getElementById('note-modal-textarea').value = node.data('note') || '';
         document.getElementById('note-modal').style.display = 'flex';
-        setTimeout(() => document.getElementById('note-modal-textarea').focus(), 50);
+        setTimeout(() => document.getElementById('note-modal-label-input').focus(), 50);
     }
 
     function closeNoteModal() {
@@ -319,9 +319,11 @@
 
     function saveNoteModal() {
         if (!activeNoteNode) return;
-        const val = document.getElementById('note-modal-textarea').value;
-        activeNoteNode.data('note', val);
-        activeNoteNode.data('hasNote', val ? 'true' : 'false');
+        const label = document.getElementById('note-modal-label-input').value;
+        const note = document.getElementById('note-modal-textarea').value;
+        if (label.trim()) activeNoteNode.data('label', label);
+        activeNoteNode.data('note', note);
+        activeNoteNode.data('hasNote', note ? 'true' : 'false');
         markDirty();
         closeNoteModal();
     }

@@ -227,6 +227,32 @@ html, body {
     line-height: 1;
 }
 
+.note-modal-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #111;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.note-modal-card input[type="text"] {
+    border: 1.5px solid #000;
+    border-radius: 3px;
+    padding: 8px 12px;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    background: #fafafa;
+    color: #111;
+}
+
+.note-modal-card input[type="text"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.15);
+    background: #fff;
+}
+
 .note-modal-card textarea {
     border: 1.5px solid #000;
     border-radius: 3px;
