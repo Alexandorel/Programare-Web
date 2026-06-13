@@ -105,7 +105,30 @@ html, body {
     width: 100%;
     height: 100%;
     border-right: 2px solid #000;
+    position: relative;
+    overflow: hidden;
 }
+
+.resize-box {
+    position: absolute;
+    border: 2px dashed #000;
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+.resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border: 2px solid #000;
+    box-sizing: border-box;
+    z-index: 10;
+}
+.resize-nw { cursor: nw-resize; }
+.resize-ne { cursor: ne-resize; }
+.resize-sw { cursor: sw-resize; }
+.resize-se { cursor: se-resize; }
 
 /* Side panel */
 .side-panel {
@@ -128,6 +151,14 @@ html, body {
 }
 
 .side-panel small { color: #555; }
+
+.side-panel label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #111;
+    margin-top: 4px;
+    display: block;
+}
 
 .side-panel input, .side-panel textarea {
     background: #fafafa;
