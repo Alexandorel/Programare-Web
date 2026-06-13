@@ -12,14 +12,31 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res, next) => {
     try {
         const username = String(req.body.username || '').trim();
-        if (!username) {
+        const password = String(req.body.password || '');
+
+        if (!username || !password) {
             return res.status(400).render('login', {
                 title: 'Autentificare - NodeNotes',
-                error: 'Username obligatoriu'
+                error: 'Username si parola sunt obligatorii'
             });
         }
-        let user = await User.findOne({ username });
-        if (!user) user = await User.create({ username });
+
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(401).render('login', {
+                title: 'Autentificare - NodeNotes',
+                error: 'Username sau parola incorecte'
+            });
+        }
+
+        const corect = await bcrypt.compare(password, user.passwordHash);
+        if (!corect) {
+            return res.status(401).render('login', {
+                title: 'Autentificare - NodeNotes',
+                error: 'Username sau parola incorecte'
+            });
+        }
+
         req.session.userId = user._id.toString();
         req.session.username = user.username;
         res.redirect('/dashboard');
