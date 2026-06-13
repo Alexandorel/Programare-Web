@@ -71,14 +71,17 @@ router.put('/api/files/:id', requireLogin, async (req, res, next) => {
         if (!isValidId(req.params.id)) return res.status(404).json({ error: 'not found' });
         const { name, nodes, edges } = req.body;
         const update = {};
-        if (typeof name === 'string') update.name = name.trim() || 'Fisier fara titlu';
+        if (typeof name === 'string') update.name = name.trim() || 'Untitled file';
         if (Array.isArray(nodes)) {
             update.nodes = nodes.map(n => ({
                 nodeId: String(n.nodeId),
-                label: String(n.label || 'Nod nou'),
+                label: String(n.label || 'New node'),
                 note: String(n.note || ''),
                 x: Number(n.x) || 0,
-                y: Number(n.y) || 0
+                y: Number(n.y) || 0,
+                w: Number(n.w) || 80,
+                h: Number(n.h) || 80,
+                fontSize: Number(n.fontSize) || 13
             }));
         }
         if (Array.isArray(edges)) {
