@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 const User = require('../db/users');
 
 const router = express.Router();
@@ -35,10 +36,18 @@ router.get('/register', (req, res) => {
 router.post('/register', async (req, res, next) => {
     try {
         const username = String(req.body.username || '').trim();
-        if (!username) {
+        const password = String(req.body.password || '');
+
+        if (!username || !password) {
             return res.status(400).render('register', {
                 title: 'Inregistrare - NodeNotes',
-                error: 'Username obligatoriu'
+                error: 'Username si parola sunt obligatorii'
+            });
+        }
+        if (password.length < 6) {
+            return res.status(400).render('register', {
+                title: 'Inregistrare - NodeNotes',
+                error: 'Parola trebuie sa aiba cel putin 6 caractere'
             });
         }
         const existing = await User.findOne({ username });
@@ -48,7 +57,10 @@ router.post('/register', async (req, res, next) => {
                 error: 'Username deja folosit'
             });
         }
-        const user = await User.create({ username });
+
+        const passwordHash = await bcrypt.hash(password, 10);
+        const user = await User.create({ username, passwordHash });
+
         req.session.userId = user._id.toString();
         req.session.username = user.username;
         res.redirect('/dashboard');
