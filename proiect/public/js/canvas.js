@@ -12,6 +12,10 @@
     let resizeEls = [];
     let resizingData = null;
 
+    function computeFontSize(w, h) {
+        return Math.max(8, Math.round(Math.min(w, h) / 6));
+    }
+
     function nextId(prefix) {
         return prefix + '_' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
     }
@@ -34,7 +38,7 @@
                     'color': '#000',
                     'text-valign': 'center',
                     'text-halign': 'center',
-                    'font-size': '13px',
+                    'font-size': 'data(fontSize)',
                     'text-wrap': 'wrap',
                     'text-max-width': 'data(w)',
                     'width': 'data(w)',
@@ -124,6 +128,7 @@
         if (id.includes('n')) newH = Math.max(40, Math.round(startH - dy * 2));
         node.data('w', newW);
         node.data('h', newH);
+        node.data('fontSize', computeFontSize(newW, newH));
         placeResizeHandles(node);
         markDirty();
     });
@@ -154,7 +159,7 @@
         fileNameInput.value = data.name || '';
         const nodes = (data.nodes || []).map(n => ({
             group: 'nodes',
-            data: { id: n.nodeId, label: n.label, note: n.note || '', hasNote: n.note ? 'true' : 'false', w: n.w || 80, h: n.h || 80 },
+            data: { id: n.nodeId, label: n.label, note: n.note || '', hasNote: n.note ? 'true' : 'false', w: n.w || 80, h: n.h || 80, fontSize: n.fontSize || computeFontSize(n.w || 80, n.h || 80) },
             position: { x: n.x || 0, y: n.y || 0 }
         }));
         const edges = (data.edges || []).map(e => ({
@@ -177,7 +182,8 @@
                 x: n.position('x'),
                 y: n.position('y'),
                 w: n.data('w') || 80,
-                h: n.data('h') || 80
+                h: n.data('h') || 80,
+                fontSize: n.data('fontSize') || computeFontSize(n.data('w') || 80, n.data('h') || 80)
             })),
             edges: cy.edges().map(e => ({
                 edgeId: e.id(),
@@ -217,7 +223,7 @@
         const id = nextId('n');
         const ele = cy.add({
             group: 'nodes',
-            data: { id, label: label || 'New node', note: '', hasNote: 'false', w: 80, h: 80 },
+            data: { id, label: label || 'New node', note: '', hasNote: 'false', w: 80, h: 80, fontSize: computeFontSize(80, 80) },
             position: pos
         });
         markDirty();
