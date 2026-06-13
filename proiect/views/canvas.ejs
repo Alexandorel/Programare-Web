@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,23 +10,23 @@
     <div class="app">
         <header class="top-bar">
             <div class="left">
-                <a href="/dashboard" class="btn">&larr; Fisiere</a>
+                <a href="/dashboard" class="btn">&larr; My Files</a>
                 <input id="file-name" class="file-name" type="text" value="<%= file.name %>">
             </div>
             <div class="right">
                 <span id="edge-hint" class="edge-hint" style="display:none;"></span>
-                <span id="save-status" class="save-status">Salvat</span>
-                <button id="btn-add-node">+ Nod</button>
-                <button id="btn-fit">Centreaza</button>
-                <button id="btn-save" class="primary">Salveaza</button>
+                <span id="save-status" class="save-status">Saved</span>
+                <button id="btn-add-node">+ Node</button>
+                <button id="btn-fit">Fit</button>
+                <button id="btn-save" class="primary">Save</button>
             </div>
         </header>
 
         <div id="cy"></div>
 
         <aside id="side-panel" class="side-panel">
-            <h3>Detalii</h3>
-            <p class="empty">Selecteaza un nod pentru a-i edita eticheta si nota.</p>
+            <h3>Details</h3>
+            <p class="empty">Select a node to edit its label and note.</p>
         </aside>
     </div>
 
