@@ -16,10 +16,22 @@
         }
 
         /* Navbar */
+        .navbar-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 20px 20px 0;
+        }
+
         .navbar {
             background-color: #000 !important;
-            border-bottom: 2px solid #000;
+            border: 2px solid #000;
+            border-radius: 4px;
             padding: 12px 24px;
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .navbar-brand {
@@ -55,7 +67,7 @@
         main {
             max-width: 960px;
             margin: 0 auto;
-            padding: 36px 20px;
+            padding: 24px 20px 36px;
         }
 
         .section-header {
@@ -100,11 +112,31 @@
             font-weight: 600;
             font-size: 0.9rem;
             white-space: nowrap;
+            padding: 6px 14px;
+            cursor: pointer;
             transition: background 0.15s, color 0.15s;
         }
 
         .btn-create:hover {
             background: #fff;
+            color: #000;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: #555;
+            border: 1.5px solid #aaa;
+            border-radius: 3px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            padding: 6px 14px;
+            cursor: pointer;
+            transition: border-color 0.15s, color 0.15s;
+        }
+
+        .btn-cancel:hover {
+            border-color: #000;
             color: #000;
         }
 
@@ -176,6 +208,7 @@
 </head>
 <body>
 
+    <div class="navbar-wrapper">
     <nav class="navbar">
         <span class="navbar-brand">
             <!-- Notebook icon -->
@@ -195,14 +228,19 @@
             </form>
         </div>
     </nav>
+    </div>
 
     <main>
         <div class="section-header">
             <h2>My Files</h2>
-            <form action="/files" method="POST" class="new-file-form">
-                <input type="text" name="name" class="form-control" placeholder="New file name" required>
-                <button class="btn-create" type="submit">+ Create</button>
-            </form>
+            <div class="d-flex align-items-center gap-2">
+                <form action="/files" method="POST" class="new-file-form" id="new-file-form" style="display:none !important;">
+                    <input type="text" name="name" class="form-control" id="new-file-input" placeholder="New file name" required>
+                    <button class="btn-create" type="submit">Save</button>
+                    <button type="button" class="btn-cancel" onclick="toggleNewFile(false)">Cancel</button>
+                </form>
+                <button class="btn-create" id="btn-show-create" onclick="toggleNewFile(true)">+ Create</button>
+            </div>
         </div>
 
         <% if (files.length === 0) { %>
@@ -241,5 +279,20 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleNewFile(show) {
+            const form = document.getElementById('new-file-form');
+            const btn  = document.getElementById('btn-show-create');
+            if (show) {
+                form.style.setProperty('display', 'flex', 'important');
+                btn.style.display = 'none';
+                document.getElementById('new-file-input').focus();
+            } else {
+                form.style.setProperty('display', 'none', 'important');
+                btn.style.display = '';
+                document.getElementById('new-file-input').value = '';
+            }
+        }
+    </script>
 </body>
 </html>
