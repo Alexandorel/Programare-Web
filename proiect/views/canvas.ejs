@@ -30,6 +30,19 @@
         </aside>
     </div>
 
+    <div id="note-modal" class="note-modal" style="display:none;">
+        <div class="note-modal-card">
+            <div class="note-modal-header">
+                <span id="note-modal-title">Note</span>
+                <button id="note-modal-close" aria-label="Close">&#x2715;</button>
+            </div>
+            <textarea id="note-modal-textarea" placeholder="Write a note for this node..."></textarea>
+            <div class="note-modal-footer">
+                <button id="note-modal-save">Save</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
     <script>
         window.__FILE_ID__ = "<%= file._id %>";

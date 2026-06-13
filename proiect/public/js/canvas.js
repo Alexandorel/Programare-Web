@@ -11,6 +11,7 @@
     let pendingEdgeSource = null;
     let resizeEls = [];
     let resizingData = null;
+    let activeNoteNode = null;
 
     function computeFontSize(w, h) {
         return Math.max(8, Math.round(Math.min(w, h) / 6));
@@ -280,17 +281,9 @@
                 <h3>Node selected</h3>
                 <small>ID: ${el.id()}</small>
                 <label>Label</label>
-                <input id="node-label" type="text" value="${escapeAttr(el.data('label') || '')}">
-                <label>Note</label>
-                <textarea id="node-note" placeholder="Write a note for this node...">${escapeText(el.data('note') || '')}</textarea>`;
+                <input id="node-label" type="text" value="${escapeAttr(el.data('label') || '')}">`;
             document.getElementById('node-label').addEventListener('input', (e) => {
                 el.data('label', e.target.value);
-                markDirty();
-            });
-            document.getElementById('node-note').addEventListener('input', (e) => {
-                const val = e.target.value;
-                el.data('note', val);
-                el.data('hasNote', val ? 'true' : 'false');
                 markDirty();
             });
         } else {
@@ -310,6 +303,36 @@
     function escapeAttr(s) { return String(s).replace(/"/g, '&quot;'); }
     function escapeText(s) { return String(s).replace(/</g, '&lt;'); }
 
+    // ── Note modal ────────────────────────────────────────────────
+    function openNoteModal(node) {
+        activeNoteNode = node;
+        document.getElementById('note-modal-title').textContent = node.data('label') || 'Note';
+        document.getElementById('note-modal-textarea').value = node.data('note') || '';
+        document.getElementById('note-modal').style.display = 'flex';
+        setTimeout(() => document.getElementById('note-modal-textarea').focus(), 50);
+    }
+
+    function closeNoteModal() {
+        document.getElementById('note-modal').style.display = 'none';
+        activeNoteNode = null;
+    }
+
+    function saveNoteModal() {
+        if (!activeNoteNode) return;
+        const val = document.getElementById('note-modal-textarea').value;
+        activeNoteNode.data('note', val);
+        activeNoteNode.data('hasNote', val ? 'true' : 'false');
+        markDirty();
+        closeNoteModal();
+    }
+
+    document.getElementById('note-modal-save').addEventListener('click', saveNoteModal);
+    document.getElementById('note-modal-close').addEventListener('click', closeNoteModal);
+    document.getElementById('note-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('note-modal')) closeNoteModal();
+    });
+    // ─────────────────────────────────────────────────────────────
+
     cy.on('tap', (evt) => {
         if (evt.target === cy) {
             clearEdgeSource();
@@ -325,6 +348,8 @@
                     connectNodes(pendingEdgeSource, evt.target);
                     clearEdgeSource();
                 }
+            } else {
+                openNoteModal(evt.target);
             }
         }
     });
@@ -361,6 +386,7 @@
         const target = e.target;
         const inField = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
         if (e.key === 'Escape') {
+            closeNoteModal();
             clearEdgeSource();
             return;
         }
