@@ -14,7 +14,7 @@
     }
 
     if (typeof cytoscape === 'undefined') {
-        saveStatus.textContent = 'Cytoscape nu s-a incarcat';
+        saveStatus.textContent = 'Cytoscape failed to load';
         console.error('Cytoscape lib missing');
         return;
     }
@@ -70,7 +70,7 @@
         pendingEdgeSource = node;
         node.addClass('edge-source');
         edgeHint.style.display = 'inline';
-        edgeHint.textContent = 'Shift+click un alt nod pentru conexiune (Esc anuleaza)';
+        edgeHint.textContent = 'Shift+click another node to connect (Esc to cancel)';
     }
 
     function loadGraph(data) {
@@ -92,10 +92,10 @@
 
     function serializeGraph() {
         return {
-            name: fileNameInput.value.trim() || 'Fisier fara titlu',
+            name: fileNameInput.value.trim() || 'Untitled file',
             nodes: cy.nodes().map(n => ({
                 nodeId: n.id(),
-                label: n.data('label') || 'Nod nou',
+                label: n.data('label') || 'New node',
                 note: n.data('note') || '',
                 x: n.position('x'),
                 y: n.position('y')
@@ -110,7 +110,7 @@
 
     function markDirty() {
         dirty = true;
-        saveStatus.textContent = 'Nesalvat...';
+        saveStatus.textContent = 'Unsaved...';
         if (saveTimer) clearTimeout(saveTimer);
         saveTimer = setTimeout(saveNow, 800);
     }
@@ -118,7 +118,7 @@
     async function saveNow() {
         if (!dirty) return;
         dirty = false;
-        saveStatus.textContent = 'Salvez...';
+        saveStatus.textContent = 'Saving...';
         try {
             const res = await fetch('/api/files/' + fileId, {
                 method: 'PUT',
@@ -126,10 +126,10 @@
                 body: JSON.stringify(serializeGraph())
             });
             if (!res.ok) throw new Error('HTTP ' + res.status);
-            saveStatus.textContent = 'Salvat';
+            saveStatus.textContent = 'Saved';
         } catch (err) {
             console.error(err);
-            saveStatus.textContent = 'Eroare la salvare';
+            saveStatus.textContent = 'Save error';
             dirty = true;
         }
     }
@@ -138,7 +138,7 @@
         const id = nextId('n');
         const ele = cy.add({
             group: 'nodes',
-            data: { id, label: label || 'Nod nou', note: '', hasNote: 'false' },
+            data: { id, label: label || 'New node', note: '', hasNote: 'false' },
             position: pos
         });
         markDirty();
@@ -163,33 +163,33 @@
         const selected = cy.$('node:selected, edge:selected');
         if (selected.length === 0) {
             sidePanel.innerHTML = `
-                <h3>Detalii</h3>
-                <p class="empty">Selecteaza un nod pentru a-i edita eticheta si nota.</p>
+                <h3>Details</h3>
+                <p class="empty">Select a node to edit its label and note.</p>
                 <div class="hint">
-                    <strong>Cum se foloseste:</strong><br>
-                    - Dublu-click pe canvas: nod nou<br>
-                    - Buton <em>+ Nod</em>: nod nou in centru<br>
-                    - <strong>Shift+click</strong> pe un nod, apoi pe altul: conexiune<br>
-                    - Dublu-click pe nod: redenumire rapida<br>
-                    - Selecteaza + tasta <em>Delete</em>: sterge<br>
-                    - Scroll: zoom, drag fundal: pan<br>
-                    - <em>Esc</em>: anuleaza modul de conexiune
+                    <strong>How to use:</strong><br>
+                    - Double-click on canvas: new node<br>
+                    - <em>+ Node</em> button: new node at center<br>
+                    - <strong>Shift+click</strong> a node, then another: connect<br>
+                    - Double-click a node: quick rename<br>
+                    - Select + <em>Delete</em> key: remove<br>
+                    - Scroll: zoom &nbsp;/&nbsp; drag background: pan<br>
+                    - <em>Esc</em>: cancel connection mode
                 </div>`;
             return;
         }
         if (selected.length > 1) {
-            sidePanel.innerHTML = `<h3>Detalii</h3><p class="empty">${selected.length} elemente selectate.</p>`;
+            sidePanel.innerHTML = `<h3>Details</h3><p class="empty">${selected.length} elements selected.</p>`;
             return;
         }
         const el = selected[0];
         if (el.isNode()) {
             sidePanel.innerHTML = `
-                <h3>Nod selectat</h3>
+                <h3>Node selected</h3>
                 <small>ID: ${el.id()}</small>
-                <label>Eticheta</label>
+                <label>Label</label>
                 <input id="node-label" type="text" value="${escapeAttr(el.data('label') || '')}">
-                <label>Nota</label>
-                <textarea id="node-note" placeholder="Scrie o nota pentru acest nod...">${escapeText(el.data('note') || '')}</textarea>`;
+                <label>Note</label>
+                <textarea id="node-note" placeholder="Write a note for this node...">${escapeText(el.data('note') || '')}</textarea>`;
             document.getElementById('node-label').addEventListener('input', (e) => {
                 el.data('label', e.target.value);
                 markDirty();
@@ -202,9 +202,9 @@
             });
         } else {
             sidePanel.innerHTML = `
-                <h3>Conexiune selectata</h3>
+                <h3>Connection selected</h3>
                 <small>${el.data('source')} &rarr; ${el.data('target')}</small>
-                <button id="del-edge" style="background:#a33d3d;color:#fff;border:none;padding:8px;border-radius:6px;cursor:pointer;margin-top:8px;">Sterge conexiunea</button>`;
+                <button id="del-edge" style="background:transparent;color:#dc3545;border:1.5px solid #dc3545;padding:8px;border-radius:3px;cursor:pointer;margin-top:8px;font-weight:600;width:100%;">Delete connection</button>`;
             document.getElementById('del-edge').addEventListener('click', () => {
                 el.remove();
                 markDirty();
@@ -242,7 +242,7 @@
             addNodeAt(evt.position);
         } else if (evt.target.isNode && evt.target.isNode()) {
             const node = evt.target;
-            const newLabel = prompt('Redenumeste nodul:', node.data('label') || '');
+            const newLabel = prompt('Rename node:', node.data('label') || '');
             if (newLabel !== null) {
                 node.data('label', newLabel);
                 markDirty();
@@ -291,6 +291,6 @@
         .then(loadGraph)
         .catch(err => {
             console.error(err);
-            saveStatus.textContent = 'Eroare la incarcare';
+            saveStatus.textContent = 'Load error';
         });
 })();
